@@ -1,0 +1,7 @@
+configobj
+paramiko
+lxml
+pysnmp
+py-zabbix
+netaddr
+
