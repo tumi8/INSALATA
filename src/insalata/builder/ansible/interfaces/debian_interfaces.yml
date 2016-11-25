@@ -1,0 +1,11 @@
+- hosts: "{{ target }}"
+  user: root
+  roles:
+     - role: debops.ifupdown
+       ifupdown: True
+       ifupdown_external_interface: "controlling"
+       ifupdown_ignore_cap12s: True
+       ifupdown_ignore_static: True
+       ifupdown_ignore_networkmanager: True
+       ifupdown_interfaces: "{{ interfaces }}"
+

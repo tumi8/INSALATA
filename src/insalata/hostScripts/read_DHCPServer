@@ -1,0 +1,32 @@
+#Get the information if host is DHCP-Server
+#Format <interface>--<startIP>--<endIP>--<leaseTime>
+
+cd /etc/
+echo -n "{ \"ranges\" : { "
+{ cat dnsmasq.conf 2>/dev/null ; grep -h "^dhcp-range\s*=" dnsmasq.d/* 2>/dev/null ; } | awk '
+        /^\s*dhcp-range/ {
+                                sub(" ", "", $0)
+                                sub("set:", "", $0)
+                                sub(" ", "", $0)
+                                split($0, arr, "=|,")
+                                printf "\""
+                                system("cat /sys/class/net/"arr[2]"/address 2>&1 | tr --delete \"\n\"")
+                                printf "\" : { "
+                                printf "\"from\" : \"" arr[3] "\", "
+                                printf "\"to\" : \"" arr[4] "\", "
+                                print "\"lease\" : \"" arr[5] "\" }, "
+                        }'
+echo -n " \"delimiter\" : {} } , \"options\" : { "
+{ cat dnsmasq.conf 2>/dev/null ; grep -h "^dhcp-option\s*=" dnsmasq.d/* 2>/dev/null ; } | awk '
+        /^\s*dhcp-option/ {
+                        sub(" ", "", $0)
+                        sub("tag:", "", $0)
+                        sub(" ", "", $0)
+                        split($0, arr, "=|,")
+                        printf "\""
+                        system("cat /sys/class/net/"arr[2]"/address 2>&1 | tr --delete \"\n\"")
+                        printf "\" : { "
+                        printf "\"announced_gateway\" : \"" arr[4] "\" },"
+                }'
+echo " \"delimiter\" : {} } }"
+

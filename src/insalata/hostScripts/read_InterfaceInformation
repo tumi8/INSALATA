@@ -1,0 +1,29 @@
+cipt extracts the information whether the interfaces in /etc/network/interfaces have a static or use dhcp 
+#Format: { "name" : "<name>", "type" : "<dhcp|loopback|static>", "mac" : "<mac>" optional: "gateway" : "<gw>" }
+
+cd /etc/network
+{ cat interfaces 2>/dev/null ; cat interfaces.d/* 2>/dev/null ; } | awk '
+	/iface/ {
+		if($4!="auto") {
+			printf "{ \"name\" : "
+			printf "\""$2"\"" #print name
+			printf ", \"type\" : "
+			printf "\""$4"\"" #print static or dhcp
+			printf ", \"mac\" : \""
+			system("cat /sys/class/net/"$2"/address 2>&1 | tr --delete \"\\n\"")
+			printf "\", \"mtu\" : \""
+			system("cat /sys/class/net/"$2"/mtu 2>&1 | tr --delete \"\\n\"")
+			printf "\", \"speed\" : \""
+			system("cat /sys/class/net/"$2"/speed 2>&1 | tr --delete \"\\n\"")
+			printf "\""
+			for (; getline != 0 && $1 != "iface" && $1 != "";)
+			{
+				if($1=="gateway") 
+				{
+					printf ", \"gateway\" : \""$2"\""
+				}
+			}
+			printf " }\n"
+		}                                                   
+        }'
+

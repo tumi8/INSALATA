@@ -1,0 +1,11 @@
+- hosts: "{{ target }}"
+  user: root
+  tasks:
+  - name: Enable forwarding
+    sysctl: name=net.ipv4.ip_forward value=1 state=present sysctl_set=yes
+  - name: Copy ip-up.d hook script
+    copy: src=routing dest=/etc/network/if-up.d/routing owner=root mode="u=rwx"
+  - name: Create static routes
+    template: src=routes.j2 dest=/usr/local/config/routes owner=root mode="u=rwx"
+  - name: Run the script once in order to setup the routes without reboot
+    shell: /usr/local/config/routes

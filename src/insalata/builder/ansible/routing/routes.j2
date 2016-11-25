@@ -1,0 +1,3 @@
+{% for r in routes %}
+   ip route add {{ r['network'] }}/{{ r['mask'] }} via {{ r['next'] }}
+{% endfor %}

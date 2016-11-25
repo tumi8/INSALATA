@@ -1,0 +1,22 @@
+#Get the information if host is DNS-Server
+#Format { "interface" : { "<if1>" : "<mac>", "<if2>": "<mac>", "delimiter" : ""}, "domain" : "<domain>" }
+
+cd /etc/
+echo -n "{ \"interfaces\" : { "
+{ cat dnsmasq.conf 2>/dev/null ; grep -h "^\s*interface\s*=" dnsmasq.d/* 2>/dev/null ; } | awk '
+        /^\s*interface/ {
+                                split($0, arr, "=")
+                                sub(" ", "", arr[2])
+                                printf "\""arr[2]"\" : \""
+				system("cat /sys/class/net/"arr[2]"/address 2>&1 | tr --delete \"\n\"")
+				printf "\" ,"
+                        }'
+echo -n "\"delimiter\" : \"\" }"
+{ cat dnsmasq.conf 2>/dev/null ; grep -h "^\s*domain\s*=" dnsmasq.d/* 2>/dev/null ; } | awk '
+        /^\s*^domain/ {
+                        split($0, arr, "=")
+                        sub(" ", "", arr[2])
+                        printf ", \"domain\" : \""arr[2]"\""
+                }'
+echo " }"
+

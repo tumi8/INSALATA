@@ -1,0 +1,29 @@
+- hosts: "{{ target }}"
+  user: root
+  tasks:
+  - name: Create file with firewall dump
+    copy: content="{{ raw }}" dest="/usr/local/config/iptables"
+  - name: Restore rules
+    shell: iptables-restore < /usr/local/config/iptables
+  - name: Remove the temporary file
+    shell: rm /usr/local/config/iptables
+  - name: Save new rules to be persistent with iptables-persistent module in /etc/iptables/rules.v4
+    command: netfilter-persistent save
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "16.04"
+  - name: Reload rules
+    command: netfilter-persistent reload
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "16.04"
+  - name: Save new rules to be persistent with iptables-persistent module in /etc/iptables/rules.v4
+    command: /etc/init.d/iptables-persistent save 
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "14.04"
+  - name: Reload rules
+    command: /etc/init.d/iptables-persistent reload
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "14.04"

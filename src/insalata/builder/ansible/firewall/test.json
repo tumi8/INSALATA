@@ -1,0 +1,27 @@
+{
+   "target":"presentation-router-2",
+   "rules":[
+      {
+         "in_interface":"enxdeadfefedeaa",
+         "out_interface":null,
+         "action":"DROP",
+         "srcnet":"0.0.0.0/0",
+         "sports":null,
+         "dports":null,
+         "destnet":"192.168.1.23/32",
+         "protocol":"tcp",
+         "chain":"INPUT"
+      },
+      {
+         "in_interface":null,
+         "out_interface":null,
+         "action":"DROP",
+         "srcnet":"0.0.0.0/0",
+         "sports":null,
+         "dports":"1000:1001",
+         "destnet":"192.168.44.0/24",
+         "protocol":"tcp",
+         "chain":"OUTPUT"
+      }
+   ]
+}
