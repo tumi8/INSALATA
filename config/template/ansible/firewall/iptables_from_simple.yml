@@ -1,0 +1,35 @@
+- hosts: "{{ target }}"
+  user: root
+  tasks:
+  - name: Enable forwarding
+    iptables:
+      chain: "{{ item.chain }}"
+      jump: "{{ item.action }}"
+      protocol: "{{ item.protocol }}"
+      source: "{{ item.srcnet | default('0.0.0.0/0', true) }}"
+      destination: "{{ item.destnet | default('0.0.0.0/0', true) }}"
+      source_port: "{{ item.sports | default(omit, true) }}"
+      destination_port: "{{ item.dports | default(omit, true) }}"
+      in_interface: "{{ item.in_interface | default(omit, true) }}"
+      out_interface: "{{ item.out_interface | default(omit, true) }}"
+    with_items: "{{ rules }}"
+  - name: Save new rules to be persistent with iptables-persistent module in /etc/iptables/rules.v4
+    command: netfilter-persistent save
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "16.04"
+  - name: Reload rules
+    command: netfilter-persistent reload
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "16.04"
+  - name: Save new rules to be persistent with iptables-persistent module in /etc/iptables/rules.v4
+    command: /etc/init.d/iptables-persistent save 
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "14.04"
+  - name: Reload rules
+    command: /etc/init.d/iptables-persistent reload
+    when:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_version == "14.04"

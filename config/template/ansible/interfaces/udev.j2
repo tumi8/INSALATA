@@ -1,0 +1,11 @@
+#written by Ansible during automated setup
+# -> Default behavior for interface names with 'enx<MAC>'; Controlling interface has a fixed name
+
+SUBSYSTEM!="net", GOTO="net_setup_link_end"
+IMPORT{builtin}="path_id"
+ACTION!="add", GOTO="net_setup_link_end"
+IMPORT{builtin}="net_setup_link"
+NAME=="", ENV{ID_NET_NAME_MAC}!="", NAME="$env{ID_NET_NAME_MAC}"
+LABEL="net_setup_link_end"
+
+SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="eth0", NAME="controlling"

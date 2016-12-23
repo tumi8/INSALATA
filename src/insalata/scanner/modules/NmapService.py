@@ -30,8 +30,9 @@ def scan(graph, connectionInfo, logger, thread):
     logger.info("Executing nmap service scan.")
     for hostName in json.loads(connectionInfo['hosts']):
         scanHost = [h for h in graph.getAllNeighbors(Host) if h.getID() == hostName] #Host executing nmap
-        if len(hostName) == 0:
-            logger.error("No host object found for hostname {0}. Nmap scan failed!")
+        if len(scanHost) == 0: # Error handling if nmap host not in graph
+            logger.error("No host object found for hostname {0}. Nmap scan failed!".format(hostName))
+            continue
         host = scanHost[0]
 
         if not ((host.getPowerState() is None) or (host.getPowerState() == 'Running')):
@@ -49,8 +50,11 @@ def scan(graph, connectionInfo, logger, thread):
                 logger.debug("Skipping nmap on host {0} for network: {1}.".format(hostName, net))
                 continue
             logger.debug("Executing nmap with additional options '{0}' on host {1} for network: {2}.".format(connectionInfo["options"], hostName, net))
-            scanXml = ssh.executeNmapServiceScan(connectionInfo['options'], net)
-
+            try: # Error handling e.g. if no nmap executable on host
+                scanXml = ssh.executeNmapServiceScan(connectionInfo['options'], net)
+            except OSError as e:
+                logger.error("Exit status {1} during nmap scan on host {0}: {2}".format(host.getID(), e.errno, e.strerror))
+                continue
 
             for hostXml in scanXml.findall("host"):
                 for addrXml in hostXml.findall("address"):

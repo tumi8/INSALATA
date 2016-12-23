@@ -1,0 +1,16 @@
+- hosts: "{{ target }}"
+  user: root
+  roles:
+     - role: debops.dnsmasq
+       tcpwrappers_deny_all: False
+       dnsmasq_tftp: False
+       dnsmasq_stop_dns_rebind: False
+       dnsmasq_public_dns: True
+       dnsmasq_domain_mx: False
+       dnsmasq_domain: '{{ domain }}'
+       dnsmasq_dhcpv4: True
+       dnsmasq_router: True
+       dnsmasq_upstream_interfaces: "{{ dns_only }}"
+       dnsmasq_options: "{{ other }}"
+       dnsmasq_search: False
+       dnsmasq_interfaces: "{{ interfaces }}" 

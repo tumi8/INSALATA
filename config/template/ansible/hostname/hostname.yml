@@ -1,0 +1,7 @@
+- hosts: "{{ target }}"
+  user: root   
+
+  tasks:
+    - name: set hostname
+      hostname: name={{ name }}
+  

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#if there are 2 arguments with the second one being "dhcp", simply add an interface using dhcp
+if [ "$#" -eq 2 ] && [ "$2" == "dhcp" ]
+then
+   echo "auto eth$1" >> /etc/network/interfaces
+   echo "iface eth$1 inet $2" >> /etc/network/interfaces
+elif [ "$#" -eq 4 ] && [ "$2" == "static" ]
+then
+   echo "auto eth$1" >> /etc/network/interfaces
+   echo "iface eth$1 inet $2" >> /etc/network/interfaces
+   echo -e "\taddress $3" >> /etc/network/interfaces
+   echo -e "\tnetmask $4" >> /etc/network/interfaces
+fi

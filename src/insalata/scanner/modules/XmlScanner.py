@@ -505,7 +505,7 @@ def readL3Networks(graph, l3networksXml, logger, name, timeout, readElements):
     :param readElements: Set containing every read element from the XML -> Allows to delete not longer existing ones
     :type readElements: set
     """
-    if not l3networksXml:
+    if l3networksXml is None:
         return
     if l3networksXml:
         logger.debug("Reading Layer3Networks from XML.")

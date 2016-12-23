@@ -1,0 +1,8 @@
+- hosts: "{{ target }}"
+  user: root
+
+  tasks:
+    - name: Stop the service
+      service: name="{{ service }}" state=stopped
+    - name: Disable the service
+      service: name="{{ service }}" state=stopped

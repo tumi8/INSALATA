@@ -1,0 +1,5 @@
+- hosts: "localhost"
+  user: root
+  tasks:
+  - name: add the host
+    lineinfile: dest=/etc/ansible/hosts line="{{ host }}"

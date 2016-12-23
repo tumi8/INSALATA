@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<config name="case1">
+  <locations>
+    <location id="yggdrasil"/>
+  </locations>
+  <layer2networks>
+    <layer2network id="new-network-1" location="yggdrasil"/>
+    <layer2network id="new-network-2" location="yggdrasil"/>
+    <layer2network id="new-transport" location="yggdrasil"/>
+  </layer2networks>
+  <layer3networks>
+    <layer3network id="new1" address="172.16.244.0" netmask="255.255.255.0"/>
+    <layer3network id="new2" address="172.16.245.0" netmask="255.255.255.0"/>
+    <layer3network id="newtransport" address="172.16.246.0" netmask="255.255.255.0"/>
+  </layer3networks>
+  <hosts>
+  <host cpus="2" id="new-router-1" memoryMax="2147483648" memoryMin="536870912" powerState="Running" location="yggdrasil" template="router-base">
+      <interfaces>
+        <interface rate="125000" mtu="1500" mac="de:ad:64:7c:64:85" network="new-network-1">
+          <layer3address address="172.16.244.1" network="new1">
+            <services>
+              <dhcp from="172.16.244.100" to="172.16.244.200" lease="8h" announcedGateway="172.16.244.1"/>
+              <dns domain="new-1.yggdrasil.vitsi.test"/>
+            </services>
+          </layer3address>
+        </interface>
+        <interface rate="125000" mtu="1500" mac="de:ad:74:fa:69:c1" network="new-transport">
+          <layer3address address="172.16.246.1" network="newtransport">
+            <services>
+              <dns domain="new-1.yggdrasil.vitsi.test"/>
+            </services>
+          </layer3address>
+        </interface>
+      </interfaces>
+      <routes>
+        <route destination="172.16.245.0" gateway="172.16.246.2" genmask="255.255.255.0" />
+        <route destination="0.0.0.0" gateway="172.16.1.2" genmask="0.0.0.0" />
+      </routes>
+      <firewall>
+      </firewall>
+      <disks>
+        <disk id="new-router-1-hdd" />
+      </disks>
+    </host>
+    <host cpus="2" id="new-router-2" memoryMax="2147483648" memoryMin="536870912" powerState="Running" location="yggdrasil" template="router-base">
+      <interfaces>
+        <interface rate="125000" mtu="1500" mac="de:ad:64:7c:64:84" network="new-network-2">
+          <layer3address address="172.16.245.1" network="new2">
+            <services>
+              <dhcp from="172.16.245.100" to="172.16.245.200" lease="8h" announcedGateway="172.16.245.1"/>
+              <dns domain="new-2.yggdrasil.vitsi.test"/>
+            </services>
+          </layer3address>
+        </interface>
+        <interface rate="125000" mtu="1500" mac="de:ad:74:fa:69:c0" network="new-transport">
+          <layer3address address="172.16.246.2" network="newtransport">
+            <services>
+              <dns domain="new-2.yggdrasil.vitsi.test"/>
+            </services>
+          </layer3address>
+        </interface>
+      </interfaces>
+      <routes>
+        <route destination="172.16.244.0" gateway="172.16.246.1" genmask="255.255.255.0" />
+        <route destination="0.0.0.0" gateway="172.16.246.1" genmask="0.0.0.0" />
+      </routes>
+      <firewall>
+        <firewallRules>
+          <rule chain="INPUT" action="drop" protocol="tcp" srcnet="172.16.244.100/32" destnet="172.16.245.0/24" />
+          <rule chain="INPUT" action="drop" protocol="tcp" srcnet="192.168.1.1/32" />
+        </firewallRules>
+      </firewall>
+      <disks>
+        <disk id="new-router-2-hdd" />
+      </disks>
+    </host>
+    <host cpus="2" id="new-host-1" memoryMax="2147483648" memoryMin="536870912" powerState="Running" location="yggdrasil" template="host-base">
+      <interfaces>
+        <interface rate="125000" mtu="1500" mac="de:ad:b7:fe:dc:f7" network="new-network-1"/>
+      </interfaces>
+      <disks>
+        <disk id="new-host-1-hdd" />
+      </disks>
+    </host>
+    <host cpus="2" id="new-host-2" memoryMax="2147483648" memoryMin="536870912" powerState="Running" location="yggdrasil" template="host-base">
+      <interfaces>
+        <interface rate="125000" mtu="1500" mac="de:ad:b7:fe:dc:f8" network="new-network-2"/>
+      </interfaces>
+      <disks>
+        <disk id="new-host-2-hdd" />
+      </disks>
+    </host>
+  </hosts>
+</config>
