@@ -55,7 +55,6 @@ In addition, this collector module requires an installed Zabbix server. Which da
 * netaddr (0.7.18+)
 * paramiko (2.0.2+)
 * pysnmp (4.3.2+)
-* 
 
 # Documentation
 See [ReadTheDocs](https://insalata.readthedocs.io/en/latest/index.html)
