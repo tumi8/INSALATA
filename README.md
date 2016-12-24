@@ -44,10 +44,18 @@ The location of the planner binary has to be given in the `insalata.conf` to be 
 
 For deployment and certain information collection modules it is required to [install Ansible](https://docs.ansible.com/ansible/intro_installation.html) (tested with Version 2.1.2.0).
 
+The ZabbixFirewallDump collector module requires the [FFFUU](https://github.com/diekmann/Iptables_Semantics/tree/master/haskell_tool) application to simplify the gathered firewall rules on the management unit. The executable of the tool must be located at `/etc/insalata/template/fffuu/fffuu`.
+In addition, this collector module requires an installed Zabbix server. Which data the Zabbix Server must store about the network components is listed in the documentation of the collector module.
+
+
+
 ### Python requirements ###
-* lxml
-* configobj
-* netaddr
+* lxml (3.4.4+)
+* configobj (5.0.6+)
+* netaddr (0.7.18+)
+* paramiko (2.0.2+)
+* pysnmp (4.3.2+)
+* 
 
 # Documentation
 See [ReadTheDocs](https://insalata.readthedocs.io/en/latest/index.html)

@@ -1,5 +1,5 @@
-cipt extracts the information whether the interfaces in /etc/network/interfaces have a static or use dhcp 
-#Format: { "name" : "<name>", "type" : "<dhcp|loopback|static>", "mac" : "<mac>" optional: "gateway" : "<gw>" }
+# Scipt extracts the information whether the interfaces in /etc/network/interfaces have a static or use dhcp 
+# Format: { "name" : "<name>", "type" : "<dhcp|loopback|static>", "mac" : "<mac>" optional: "gateway" : "<gw>" }
 
 cd /etc/network
 { cat interfaces 2>/dev/null ; cat interfaces.d/* 2>/dev/null ; } | awk '
@@ -25,5 +25,5 @@ cd /etc/network
 			}
 			printf " }\n"
 		}                                                   
-        }'
+	}'
 

@@ -10,6 +10,7 @@ def scan(graph, connectionInfo, logger, thread):
     """
     Get all services using a nmap scan.
     Scanning is executed on the host given in the configuration.
+    Therefore, Nmap must be installed on the scanning device.
     
     :param graph: Data Interface object for this scanner
     :type graph: :class: `Graph`
