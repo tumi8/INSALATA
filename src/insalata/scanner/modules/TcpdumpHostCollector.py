@@ -4,6 +4,29 @@ import subprocess
 from insalata.model.Layer3Address import Layer3Address
 
 def scan(graph, connectionInfo, logger, thread):
+    """
+    Detect network components using tcpdump.
+    We will only add addresses as Hosts to the the Graph, if there is no Layer3Address with the same ID!
+
+    Necessary values in the configuration file of this collector module:
+        - timeout           Timeout this collector module shall use (Integer)
+        - monitoringServer  The network component we want to start tcpdump on.
+                            If the device is localhost, no ssh connection is used.
+                            If the monitoring server != localhost, we will establish an ssh connection
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
+
+    :param connectionInfo: Information needed to connect to xen server
+    :type connectionInfo: dict
+
+    :param logger: The logger this scanner shall use
+    :type logger: logging:Logger
+
+    :param thread: Thread executing this collector
+    :type thread: insalata.scanner.Worker.Worker
+    """
+
     name = connectionInfo["name"]
     timeout = int(connectionInfo["timeout"])
     monServer = connectionInfo["monitoringServer"]

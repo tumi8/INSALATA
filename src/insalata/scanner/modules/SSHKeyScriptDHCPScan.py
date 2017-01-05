@@ -8,14 +8,17 @@ def scan(graph, connectionInfo, logger, thread):
     """
     Get DHCP information from each Host by using SSH and login with key.
 
-    :param graph: Data Interface object for this collector
-    :type graph: :class: `Graph`
+    Necessary values in the configuration file of this collector module:
+        - timeout       Timeout this collector module shall use (Integer)
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
-    :param connectionInfo: Configuration of this collector -> Login information
+    :param connectionInfo: Information needed to connect to xen server
     :type connectionInfo: dict
 
-    :param logger: The logger this collector shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :param logger: The logger this scanner shall use
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker

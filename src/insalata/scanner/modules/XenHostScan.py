@@ -8,14 +8,20 @@ def scan(graph, connectionInfo, logger, thread):
     """
     Get all VMs that exist on a xen server.
 
-    :param grpah: Data Interface object for this scanner
-    :type graph: :class: `Graph`
+    Necessary values in the configuration file of this collector module:
+        - timeout   Timeout this collector module shall use (Integer)
+        - xenuri    The URI opf the Xen server
+        - xenuser   The username we use to connect to the Management API of the Xen server
+        - xenpw     Password used for the connection
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
     :param connectionInfo: Information needed to connect to xen server
     :type connectionInfo: dict
 
     :param logger: The logger this scanner shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker

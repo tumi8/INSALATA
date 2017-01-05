@@ -4,16 +4,23 @@ from insalata.model.Interface import Interface
 
 def scan(graph, connectionInfo, logger, thread):
     """
-    Collect interface information using SNMP
+    Collect interface information using SNMP.
     
-    :param graph: Data Interface object for this collector
-    :type graph: :class: `Graph`
+    Necessary values in the configuration file of this collector module:
+        - timeout       Timeout this collector module shall use (Integer)
+        - user          Username used for the SNMP login on the remote devices
+        - passwordMD5   MD5 SNMP authentication password
+        - passwordDES   DES SNMP encryption password
+        - port          (Optional) Port the module shall use for the SNMP connection. Default is 161
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
-    :param connectionInfo: Configuration of this collector -> Login information
+    :param connectionInfo: Information needed to connect to xen server
     :type connectionInfo: dict
 
-    :param logger: The logger this collector shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :param logger: The logger this scanner shall use
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker

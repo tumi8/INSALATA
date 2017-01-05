@@ -8,22 +8,25 @@ import re
 def scan(graph, connectionInfo, logger, thread):
     """
     Get Interface configuration from hosts over ssh. -> MTU, Rate, Ips
-    This method uses prepacked scripts on template.
+    This method uses prepacked scripts on templates (read_InterfaceInformation).
+
+    We will not add the loopback interface or interfaces with the mac 00:00:00:00:00:00 to the graph.
+
+    Necessary values in the configuration file of this collector module:
+        - timeout   Timeout this collector module shall use (Integer)
     
-    :param graph: Data Interface object for this collector
-    :type graph: :class: `Graph`
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
     :param connectionInfo: Configuration of this collector -> Login information
     :type connectionInfo: dict
 
     :param logger: The logger this collector shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker
     """
-
-
     logger.info("Collecting interface configuration information from Hosts")
 
     timeout = int(connectionInfo['timeout'])
@@ -47,7 +50,7 @@ def scan(graph, connectionInfo, logger, thread):
 
         #get Information
         for intf in interfaceInformation:
-            if intf['type'] == 'loopback':
+            if intf['type'] == 'loopback' or intf['mac'] != "00:00:00:00:00:00":
                 continue
             interface = graph.getOrCreateInterface(intf['mac'], name, timeout)
             interface.verify(name, timeout)

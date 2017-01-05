@@ -7,30 +7,29 @@ import re
 #Frage bzgl srcport
 def scan(graph, connectionInfo, logger, thread):
     """
-    Get all VMs that exist on a xen server.
+    Get the Firewall Ruleset of the network components stored in the graph.
 
-    Necessary values:
-        timeout
-        name
-
-        zabbixURL
-        zabbixUser
-        zabbixPassword
-        firewallDumpValue (This value must return a firewall dump in the iptables-save syntax)
-        (Optional) firewallTypeValue
-
-    :param grpah: Data Interface object for this scanner
-    :type graph: :class: `Graph`
+   Necessary values in the configuration file of this collector module:
+        - timeout               Timeout this collector module shall use (Integer)
+        - zabbixURL             URL of the ZabbixServer
+        - zabbixUser            Username we want to use to connect to the ZabbixServer
+        - zabbixPassword        Password we want to use for the connection
+        - firewallDumpValue     Value we request from the ZabbixServer. The value must return a firewall dump in the iptables-save syntax
+        - firewallTypeValue     (Optional) We request this value to get the type of the firewall, e.g. iptables
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
     :param connectionInfo: Information needed to connect to xen server
     :type connectionInfo: dict
 
     :param logger: The logger this scanner shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker
     """
+    
     logger.info("Collecting firewall information using Zabbix Server")
 
     zabbixConnection = None

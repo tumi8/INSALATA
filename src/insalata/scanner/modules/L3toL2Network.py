@@ -7,7 +7,26 @@ from insalata.model.Layer3Address import Layer3Address
 
 def scan(graph, connectionInfo, logger, thread):
     """
+    We convert every Layer3Network to a Layer2Network with the same name.
+    This is necessary as we are currently not able to detect layer two networks in physical environments
+
+    Necessary values in the configuration file of this collector module:
+        - timeout   Timeout this collector module shall use (Integer)
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
+
+    :param connectionInfo: Configuration of this collector -> Login information
+    :type connectionInfo: dict
+
+    :param logger: The logger this collector shall use
+    :type logger: logging:Logger
+
+    :param thread: Thread executing this collector
+    :type thread: insalata.scanner.Worker.Worker
     """
+
+
     logger.info("Converting Layer3Networks to Layer2Networks")
     name = connectionInfo["name"]
     timeout = int(connectionInfo["timeout"])

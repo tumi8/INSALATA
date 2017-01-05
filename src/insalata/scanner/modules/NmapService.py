@@ -11,15 +11,22 @@ def scan(graph, connectionInfo, logger, thread):
     Get all services using a nmap scan.
     Scanning is executed on the host given in the configuration.
     Therefore, Nmap must be installed on the scanning device.
+
+    Necessary values in the configuration file of this collector module:
+        - timeout           Timeout this collector module shall use (Integer)
+        - hosts             Json-Array of network components we shall use to run Nmap. the collector
+                            connects to the network components in the list using ssh and runs athe Nmap scan
+        - control_networks  (Optional) List of Layer three Networks we do NOT want to scan using Nmap
+        - options           (Optional) Additional Options we want to use for the Nmap scan
     
-    :param graph: Data Interface object for this scanner
-    :type graph: :class: `Graph`
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
     :param connectionInfo: Information needed to connect to xen server
     :type connectionInfo: dict
 
     :param logger: The logger this scanner shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker
@@ -52,7 +59,8 @@ def scan(graph, connectionInfo, logger, thread):
                 continue
             logger.debug("Executing nmap with additional options '{0}' on host {1} for network: {2}.".format(connectionInfo["options"], hostName, net))
             try: # Error handling e.g. if no nmap executable on host
-                scanXml = ssh.executeNmapServiceScan(connectionInfo['options'], net)
+                options = connectionInfo['options'] if "options" in connectionInfo else ""
+                scanXml = ssh.executeNmapServiceScan(options, net)
             except OSError as e:
                 logger.error("Exit status {1} during nmap scan on host {0}: {2}".format(host.getID(), e.errno, e.strerror))
                 continue

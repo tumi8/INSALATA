@@ -11,14 +11,20 @@ def scan(graph, connectionInfo, logger, thread):
     Timer is -1 => Objects will not be deleted.
     Therefore, the infrastructure in the XML file is laoded permanently until the XML is changed.
 
-    :param grpah: Data Interface object for this scanner
-    :type graph: :class: `Graph`
+    The module is able to detect changes in the XML file. Therefore, it is possible to modify the 
+    loaded information at runtime.
+
+    Necessary values in the configuration file of this collector module:
+        - file  Path to the XML file the collector module shall parse
+    
+    :param graph: Data interface object for this collector module
+    :type graph: insalata.model.Graph.Graph
 
     :param connectionInfo: Information needed to connect to xen server
     :type connectionInfo: dict
 
     :param logger: The logger this scanner shall use
-    :type logger: seealso:: :class:`logging:Logger`
+    :type logger: logging:Logger
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker
