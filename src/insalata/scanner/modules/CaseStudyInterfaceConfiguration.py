@@ -21,8 +21,9 @@ def scan(graph, connectionInfo, logger, thread):
 
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker
-    """
 
+    :configurationValue: Timeout this collector module shall use (Integer)
+    """
 
     logger.info("Collecting interface configuration information from Hosts")
 
