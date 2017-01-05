@@ -47,6 +47,10 @@ For deployment and certain information collection modules it is required to [ins
 The ZabbixFirewallDump collector module requires the [FFFUU](https://github.com/diekmann/Iptables_Semantics/tree/master/haskell_tool) application to simplify the gathered firewall rules on the management unit. The executable of the tool must be located at `/etc/insalata/template/fffuu/fffuu`.
 In addition, this collector module requires an installed Zabbix server. Which data the Zabbix Server must store about the network components is listed in the documentation of the collector module.
 
+The TcpdumpHostCollector collector module requires an installation of [TCPDUMP](http://www.tcpdump.org/tcpdump_man.html) on every device used for collecting.
+
+The NmapService collector module requires [Nmap](https://nmap.org/) installed on the devices used for scanning.
+
 
 
 ### Python requirements ###
