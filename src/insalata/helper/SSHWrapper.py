@@ -81,19 +81,34 @@ class SSHWrapper:
         return json.loads(output) if output != "" else None
 
     def executeNmapServiceScan(self, serviceOptions, range):
+	"""
+	Run a Nmap service detection over the given SSH connection.
+	We scan all addresses in the given range. Range must be a string that is nmap can parse.
+
+	We raise an OSError if nmap is not available on the target.
+
+
+	:param serviceOptions: Additional command line options we want to use in the nmap service detection.
+    :type serviceOptions: str
+
+    :param range: The range we want to scan with nmap. This must be a string nmap can parse.
+    :type range: str
+	"""
         #Do a ping scan to detect living hosts -> Store them in host file
         _, stdout, _ = self.ssh.exec_command("nmap -sn --max-retries=1 --max-parallelism=256 --min-parallelism=100 -T4 -n " + range + " | grep report | awk '{print $5}' > hosts")
-        stdout.channel.recv_exit_status()
+        res = stdout.channel.recv_exit_status() # Error handling e.g. if no nmap executable on host
+        if res != 0:
+            raise OSError(res, "nmap ping scan via ssh failed")
         
         #Do the service detection
-        _, stdout, _ = self.ssh.exec_command("nmap -iL hosts -oX scan.xml -sV " + serviceOptions)
-        stdout.channel.recv_exit_status()
-
-
-        _, stdout, _ = self.ssh.exec_command("cat scan.xml")
+        _, stdout, _ = self.ssh.exec_command("nmap -iL hosts -oX - -sV " + serviceOptions)
+        res = stdout.channel.recv_exit_status() # Error handling e.g. if no nmap executable on host
+        if res != 0:
+            raise OSError(res, "nmap service detection via ssh failed")
         output = ""
         for line in stdout:
             output += line
-        #self.ssh.exec_command("rm scan.xml")
-        #self.ssh.exec_command("rm hosts")
+
+        self.ssh.exec_command("rm hosts") # Remove the hosts file used for the service detection
+        output = output.replace('encoding="UTF-8"','') # Avoid encoding problems in ElementTree
         return etree.fromstring(output)

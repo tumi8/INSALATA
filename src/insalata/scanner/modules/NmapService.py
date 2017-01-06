@@ -62,7 +62,7 @@ def scan(graph, connectionInfo, logger, thread):
                 options = connectionInfo['options'] if "options" in connectionInfo else ""
                 scanXml = ssh.executeNmapServiceScan(options, net)
             except OSError as e:
-                logger.error("Exit status {1} during nmap scan on host {0}: {2}".format(host.getID(), e.errno, e.strerror))
+                logger.error("Exit status {1} during nmap scan on host {0}: {2}. Is Nmap installed on the scanning device?".format(host.getID(), e.errno, e.strerror))
                 continue
 
             for hostXml in scanXml.findall("host"):
