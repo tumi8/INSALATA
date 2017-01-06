@@ -132,6 +132,7 @@ class EnvironmentHandler(threading.Thread):
         while not self.__stopEvent.isSet():
             try:
                 _, interval, name = self.queue.get(True, TIMEOUT) #Priority is only used by queue
+                logger.debug("Starting collector module {}.".format(name))
                 if "config" not in self.config["modules"][name]:
                     self.logger.error("No configuration given for collector {0}.".format(name))
                 else:
@@ -293,7 +294,7 @@ class EnvironmentHandler(threading.Thread):
         will be launched.
         """
 
-        for collectorName in self.collectorModules:
+        for collectorName in self.collectorModules.keys():
             config = self.config["modules"][collectorName]
             if config.__class__ != configobj.Section:
                 continue
