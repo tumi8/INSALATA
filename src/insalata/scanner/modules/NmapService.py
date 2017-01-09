@@ -16,7 +16,7 @@ def scan(graph, connectionInfo, logger, thread):
         - timeout           Timeout this collector module shall use (Integer)
         - hosts             Json-Array of network components we shall use to run Nmap. the collector
                             connects to the network components in the list using ssh and runs athe Nmap scan
-        - control_networks  (Optional) List of Layer three Networks we do NOT want to scan using Nmap
+        - control_networks  (Optional) Json-Array of Layer three Networks we do NOT want to scan using Nmap
         - options           (Optional) Additional Options we want to use for the Nmap scan
     
     :param graph: Data interface object for this collector module
@@ -54,7 +54,7 @@ def scan(graph, connectionInfo, logger, thread):
 
         for networkNode in graph.getAllNeighbors(Layer3Network):
             net = networkNode.getAddress() + "/" + str(networkNode.getPrefix())
-            if "control_networks" in connectionInfo and net in connectionInfo["control_networks"]: #Skip this one
+            if "control_networks" in connectionInfo and net in json.loads(connectionInfo["control_networks"]): #Skip this one
                 logger.debug("Skipping nmap on host {0} for network: {1}.".format(hostName, net))
                 continue
             logger.debug("Executing nmap with additional options '{0}' on host {1} for network: {2}.".format(connectionInfo["options"], hostName, net))
