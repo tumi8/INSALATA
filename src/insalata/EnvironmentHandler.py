@@ -132,7 +132,7 @@ class EnvironmentHandler(threading.Thread):
         while not self.__stopEvent.isSet():
             try:
                 _, interval, name = self.queue.get(True, TIMEOUT) #Priority is only used by queue
-                logger.debug("Starting collector module {}.".format(name))
+                self.logger.debug("Starting collector module {}.".format(name))
                 if "config" not in self.config["modules"][name]:
                     self.logger.error("No configuration given for collector {0}.".format(name))
                 else:
@@ -147,7 +147,7 @@ class EnvironmentHandler(threading.Thread):
                     if interval != -1:
                         self.timers[name] = Timer(int(interval), self.executeScan, [name])
 
-                    worker = Worker(partial(self.collectorModules[name], self.graph, connectionInfo ,self.logger), partial(self.finishedCallback, name, interval), self.logger)
+                    worker = Worker(partial(self.collectorModules[name], self.graph, connectionInfo ,self.logger), name, partial(self.finishedCallback, name, interval), self.logger)
                     self.workers.append(worker)
                     worker.start()
             except ConfigObjError:
