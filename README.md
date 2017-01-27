@@ -1,9 +1,7 @@
 # INSALATA
 IT NetworkS AnaLysis And deploymenT Application
 
-# Quickstart
-
-## Service ##
+## INSTALLATION
 
 INSALATA is ideally operated as a systemd service with the following `insalata.service` file in `/etc/systemd/system`:
 ~~~~
@@ -12,7 +10,7 @@ Description=The insalata service for testbed management.
 
 [Service]
 Type=simple
-ExecStart=<PATH TO startInsalata.py in src directory>
+ExecStart=<Reference to 'startInsalata.py' in the src directory>
 
 [Install]
 WantedBy=multi-user.target
@@ -37,7 +35,7 @@ Specifies locations which are environments to which a deployment can be conducte
 #### template directory ####
 All scripts (.sh or Ansible playbooks) used by INSALATA during information collection or deployment.
 
-## Additional software ##
+### Additional software ###
 INSALATA requires Python 3.5.0+
 
 The location of the planner binary has to be given in the `insalata.conf` to be able to run testbed deployment. The application is currently implemented for use with *fast-downward* which can be obtained [here](http://www.fast-downward.org/ObtainingAndRunningFastDownward).
@@ -51,14 +49,16 @@ The TcpdumpHostCollector collector module requires an installation of [TCPDUMP](
 
 The NmapService collector module requires [Nmap](https://nmap.org/) installed on the devices used for scanning.
 
-
-
-### Python requirements ###
+#### Python requirements ####
 * lxml (3.4.4+)
 * configobj (5.0.6+)
 * netaddr (0.7.18+)
 * paramiko (2.0.2+)
 * pysnmp (4.3.2+)
 
-# Documentation
-See [ReadTheDocs](https://insalata.readthedocs.io/en/latest/index.html)
+## USAGE
+
+After the systemd service is up and running, the XML-RPC client application can be used to communicate with the service. See [client script](https://github.com/tumi8/INSALATA/blob/master/src/insalata/client.py).
+
+## Documentation
+See [ReadTheDocs](https://insalata.readthedocs.io/en/latest/index.html) and the two [theses](https://github.com/tumi8/INSALATA/tree/master/theses) covering the architecture of INSALATA in further detail.
