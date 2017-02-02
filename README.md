@@ -55,6 +55,7 @@ The NmapService collector module requires [Nmap](https://nmap.org/) installed on
 * netaddr (0.7.18+)
 * paramiko (2.0.2+)
 * pysnmp (4.3.2+)
+* py-zabbix (0.7.4)
 
 ## USAGE
 
