@@ -58,7 +58,7 @@ class SSHWrapper:
 
     def getDHCPInfo(self):
         with open('/etc/insalata/template/hostScripts/read_DHCPServer') as f:
-            script =f.read().replace("$", "\$")
+            script = f.read().replace("$", "\$")
             self.ssh.exec_command('cat > ./read_DHCPServer <<DEL\n' + script + '\nDEL')
             self.ssh.exec_command('chmod +x ./read_DHCPServer')
         _, stdout, _ = self.ssh.exec_command('bash ./read_DHCPServer')
@@ -81,19 +81,19 @@ class SSHWrapper:
         return json.loads(output) if output != "" else None
 
     def executeNmapServiceScan(self, serviceOptions, range):
-	"""
-	Run a Nmap service detection over the given SSH connection.
-	We scan all addresses in the given range. Range must be a string that is nmap can parse.
+        """
+        Run a Nmap service detection over the given SSH connection.
+        We scan all addresses in the given range. Range must be a string that is nmap can parse.
 
-	We raise an OSError if nmap is not available on the target.
+        We raise an OSError if nmap is not available on the target.
 
 
-	:param serviceOptions: Additional command line options we want to use in the nmap service detection.
-    :type serviceOptions: str
+        :param serviceOptions: Additional command line options we want to use in the nmap service detection.
+        :type serviceOptions: str
 
-    :param range: The range we want to scan with nmap. This must be a string nmap can parse.
-    :type range: str
-	"""
+        :param range: The range we want to scan with nmap. This must be a string nmap can parse.
+        :type range: str
+        """
         #Do a ping scan to detect living hosts -> Store them in host file
         _, stdout, _ = self.ssh.exec_command("nmap -sn --max-retries=1 --max-parallelism=256 --min-parallelism=100 -T4 -n " + range + " | grep report | awk '{print $5}' > hosts")
         res = stdout.channel.recv_exit_status() # Error handling e.g. if no nmap executable on host

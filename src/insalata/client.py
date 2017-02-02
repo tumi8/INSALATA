@@ -19,6 +19,8 @@ def shell_loop():
         processCommand(sys.stdin.readline())
 
 def processCommand(cmd):
+    if cmd == "\n":
+        return
 
     # Read command input
     cmd = cmd.rstrip('\n').split()

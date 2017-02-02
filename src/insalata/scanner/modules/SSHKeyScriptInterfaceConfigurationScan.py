@@ -36,7 +36,7 @@ def scan(graph, connectionInfo, logger, thread):
         if not ((host.getPowerState() is None) or (host.getPowerState() == 'Running')):
             continue
         ssh = base.getSSHConnection(host)
-        logger.info("Starting interface configuration scan on host: {0}:{1}".format(name, host.getID()))
+        logger.info("Starting interface configuration scan on host: {}".format(host.getID()))
         if ssh is None: #No ssh connecton is possible -> Skip this host
             logger.info("Skipping host {0} as ssh connection failed.".format(host.getID()))
             continue

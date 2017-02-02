@@ -48,6 +48,7 @@ def scan(graph, connectionInfo, logger, thread):
 
         existingInterfaces = set()
         for _, mac in answer:
+            logger.debug("Got SNMP reply: {}".format(str(answer)))
             mac = ":".join([format(ord(c), "x").zfill(2) for c in str(mac)])
             if mac != "":
                 interface = graph.getOrCreateInterface(mac, name, timeout)

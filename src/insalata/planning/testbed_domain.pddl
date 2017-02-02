@@ -117,7 +117,8 @@
   :parameters (?h - host)
   :precondition (and 
     (created ?h) 
-    (not (running ?h)))
+    (not (running ?h))
+    (templateChanged ?h))
   :effect (and 
     (not (created ?h)) 
     (not (named ?h)) 
@@ -343,7 +344,7 @@
   (:action unconfigureDhcp
   :parameters (?s - dhcp)
   :precondition (old ?s)
-  :effect (and (not (created ?s)) (not (dnsConfigured ?s)) (not (serviceConfigured ?s)) (increase (total-cost) 1)))
+  :effect (and (not (created ?s)) (not (dhcpConfigured ?s)) (not (serviceConfigured ?s)) (increase (total-cost) 1)))
 
   ;hardware configuration of interfaces (setting network, MAC-address and a bandwidth limit (rate))
   (:action configureNetwork

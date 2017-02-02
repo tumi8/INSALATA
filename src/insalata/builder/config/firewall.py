@@ -55,7 +55,7 @@ def configureIpTablesRaw(logger, hostId, target, raw):
         json.dump(data, outfile)
 
     #run with json
-    logger.info("[{0}] Configure firewall with raw data.".format(hostId))
+    logger.info("[{}] Configure firewall with raw data on machine named '{}'.".format(hostId, target))
     subprocess.call('ansible-playbook /etc/insalata/template/ansible/firewall/iptables_raw.yml --extra-vars "@' + filename + '"', shell=True)
 
     #remove json
@@ -102,7 +102,7 @@ def configureIpTablesFromSimple(logger, hostId, target, simplerules):
 
     #run with json
     logger.info("[{0}] Configure firewall with simplified rules.".format(hostId))
-    subprocess.call('ansible-playbook /etc/insalata/template/ansible/firewall/iptables_from_simple.yml --extra-vars "@' + filename + '"', shell=True)
+    subprocess.call('ansible-playbook /etc/insalata/template/ansible/firewall/iptables_from_simple.yml --extra-vars "@' + filename + '" -v -c paramiko', shell=True)
 
     #remove json
     if os.path.exists(filename):

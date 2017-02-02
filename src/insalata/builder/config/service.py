@@ -88,8 +88,8 @@ def configureDnsmasq(logger, service, config):
         "dns_only": dns_only,
         "interfaces": [{
             "interface": i[0].getID(),
-            "name": host.getID(),		#used for interface-name option, therefore the host name is necessary
-            "dhcp_range_start": i[1].getDhcpRangeStart(),	#todo: compare network address with from and to and determine these numbers...
+            "name": host.getID(),   #used for interface-name option, therefore the host name is necessary
+            "dhcp_range_start": i[1].getDhcpRangeStart(),
             "dhcp_range_end": i[1].getDhcpRangeEnd(),
             "dhcp_lease": i[1].getLease(),
             "gateway": i[1].getAnnouncedGateway() if i[1].getAnnouncedGateway() else "{{ ansible_" + i[0].getID() + ".ipv4.address }}"
@@ -103,8 +103,8 @@ def configureDnsmasq(logger, service, config):
         json.dump(data, outfile)
 
     #run with json
-    logger.info("[{0}] Configure dnsmasq".format(host.getID()))
-    subprocess.call('ansible-playbook /etc/insalata/template/ansible/dnsdhcp/dnsmasq.yml --extra-vars "@' + filename + '"', shell=True)
+    logger.info("[{}] Configure dnsmasq on machine named '{}'.".format(host.getID(), target))
+    subprocess.call('ansible-playbook /etc/insalata/template/ansible/dnsdhcp/dnsmasq.yml --extra-vars "@' + filename + '" -v -c paramiko', shell=True)
     
     #remove json
     if os.path.exists(filename):

@@ -33,7 +33,7 @@ def configureHostname(logger, host):
 
     #run with json
     logger.info("[{0}] Set hostname to '{1}'".format(host.getID(), host.getID()))
-    subprocess.call('ansible-playbook /etc/insalata/template/ansible/hostname/hostname.yml --extra-vars "@' + filename + '"', shell=True)
+    subprocess.call('ansible-playbook /etc/insalata/template/ansible/hostname/hostname.yml --extra-vars "@' + filename + '" -v -c paramiko', shell=True)
 
     #remove json
     if os.path.exists(filename):

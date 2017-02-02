@@ -19,7 +19,7 @@ def configureRouting(logger, host):
     target = host.getID() if host.getNameApplied() else host.getTemplate().getID()
     addToKnownHosts(target)
 
-    #build json with all routes	
+    #build json with all routes
     data = {
         "target": target,
         "routes": [{
@@ -35,8 +35,8 @@ def configureRouting(logger, host):
         json.dump(data, outfile)
 
     #run with json
-    logger.info("[{0}] Configure routing".format(host.getID()))
-    subprocess.call('ansible-playbook /etc/insalata/template/ansible/routing/debian_routing.yml --extra-vars "@' + filename + '"', shell=True)
+    logger.info("[{}] Configure routing on machine named '{}'.".format(host.getID(), target))
+    subprocess.call('ansible-playbook /etc/insalata/template/ansible/routing/debian_routing.yml --extra-vars "@' + filename + '" -v -c paramiko', shell=True)
 
     #remove json
     if os.path.exists(filename):

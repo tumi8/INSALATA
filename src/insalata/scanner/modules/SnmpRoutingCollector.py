@@ -44,6 +44,7 @@ def scan(graph, connectionInfo, logger, thread):
 
         answer = SnmpWrapper.checkReturnSnmp(request.getValue(SnmpWrapper.Values["hostForwarding"]), host, name, user, logger)
         if answer:
+            logger.debug("Got SNMP reply: {}".format(str(answer)))
             if(answer[1] == 0):
                 logger.debug("Host '{0}' does not forward IP packets.".format(host.getID()))
                 continue

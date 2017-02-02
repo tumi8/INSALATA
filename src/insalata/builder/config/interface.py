@@ -38,12 +38,12 @@ def configureInterfaceAnsibleDebian(logger, interface):
         json.dump(data, outfile)
 
     #run with json
-    logger.info("[{0}] Configure interface {1}.".format(host.getID(), interface.getID()))
-    subprocess.call('ansible-playbook /etc/insalata/template/ansible/interfaces/debian_interfaces.yml --extra-vars "@' + filename + '"', shell=True)
+    logger.info("[{0}] Configure interface {1} on machine named '{2}'.".format(host.getID(), interface.getID(), target))
+    subprocess.call('ansible-playbook /etc/insalata/template/ansible/interfaces/debian_interfaces.yml --extra-vars "@' + filename + '" -v -c paramiko', shell=True)
 
     #remove json
-    #if os.path.exists(filename):
-    #    os.remove(filename)
+    if os.path.exists(filename):
+        os.remove(filename)
 
 @builderFor(action="unconfigureInterface", template=["ubuntu"])
 def unconfigureInterfaceAnsibleDebian(logger, interface):
@@ -77,7 +77,7 @@ def unconfigureInterfaceAnsibleDebian(logger, interface):
         json.dump(data, outfile)
 
     #run with json
-    logger.info("[{0}] Unconfigure interface {1}.".format(host.getID(), interface.getID()))
+    logger.info("[{0}] Unconfigure interface {1} on machine named '{2}'.".format(host.getID(), interface.getID(), target))
     subprocess.call('ansible-playbook /etc/insalata/template/ansible/interfaces/debian_interfaces.yml --extra-vars "@' + filename + '"', shell=True)
 
     #remove json

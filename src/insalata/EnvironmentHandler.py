@@ -87,6 +87,8 @@ class EnvironmentHandler(threading.Thread):
                 self.config["backupCount"] if "backupCount" in self.config else backupCount)
 
             self.queue = PriorityQueue(self.config["queueSize"] if "queueSize" in self.config else DEFAULT_QUEUE_SIZE)
+
+            self.logger.info("Environment started!")
         except KeyError as e:
             if self.logger is not None:
                 self.logger.critical("Missing parameter: {0}".format(e.args[0]))
@@ -121,45 +123,48 @@ class EnvironmentHandler(threading.Thread):
         This method is executed when the thread of this handler is started.
         It triggers the collector modules in their specified time intervals.
         """
-        if self.__stopEvent.isSet():
-            self.logger.critical("Environment is not set on running state!")
-            return
-        if self.initScanner() is None:
-            self.logger.error("Error while initializing scanner.")
-            return
-        self.initExporters()
-        self.logger.info("Environment running...")
-        while not self.__stopEvent.isSet():
-            try:
-                _, interval, name = self.queue.get(True, TIMEOUT) #Priority is only used by queue
-                self.logger.debug("Starting collector module {}.".format(name))
-                if "config" not in self.config["modules"][name]:
-                    self.logger.error("No configuration given for collector {0}.".format(name))
-                else:
-                    configPath = self.config["modules"][name]["config"]
-                    configPath = configPath if os.path.isabs(configPath) else os.path.join(self.path, configPath)
-                    connectionInfo = ConfigObj(configPath)
-                    if connectionInfo == {}:
-                        self.logger.warning("Connection information for module {0} empty.".format(name))
-                    connectionInfo["name"] = name
+        try:
+            if self.__stopEvent.isSet():
+                self.logger.critical("Environment is not set on running state!")
+                return
+            if self.initScanner() is None:
+                self.logger.error("Error while initializing scanner.")
+                return
+            self.initExporters()
+            self.logger.info("Environment running...")
+            while not self.__stopEvent.isSet():
+                try:
+                    _, interval, name = self.queue.get(True, TIMEOUT) #Priority is only used by queue
+                    self.logger.debug("Starting collector module {}.".format(name))
+                    if "config" not in self.config["modules"][name]:
+                        self.logger.error("No configuration given for collector {0}.".format(name))
+                    else:
+                        configPath = self.config["modules"][name]["config"]
+                        configPath = configPath if os.path.isabs(configPath) else os.path.join(self.path, configPath)
+                        connectionInfo = ConfigObj(configPath)
+                        if connectionInfo == {}:
+                            self.logger.warning("Connection information for module {0} empty.".format(name))
+                        connectionInfo["name"] = name
 
-                    #interval -1 means "No restart" 
-                    if interval != -1:
-                        self.timers[name] = Timer(int(interval), self.executeScan, [name])
+                        #interval -1 means "No restart" 
+                        if interval != -1:
+                            self.timers[name] = Timer(int(interval), self.executeScan, [name])
 
-                    worker = Worker(partial(self.collectorModules[name], self.graph, connectionInfo ,self.logger), name, partial(self.finishedCallback, name, interval), self.logger)
-                    self.workers.append(worker)
-                    worker.start()
-            except ConfigObjError:
-                self.logger.error("Can not parse connectionInfo for module {0}: Path: {1}.".format(name, configPath))
-            except queue.Empty:
-                #Just do nothing. This is a normal case
-                self.logger.debug("No job to handle.")
-            except KeyError as e:
-                self.logger.error("Missing key '{0}' in configuration file for module {1}.".format(e.args[0], name))
-            except Exception as e:
-                self.logger.debug("{0}: {1}".format(type(e), traceback.format_exc()))
-                self.logger.error("Error while executing scan!")
+                        worker = Worker(partial(self.collectorModules[name], self.graph, connectionInfo ,self.logger), name, partial(self.finishedCallback, name, interval), self.logger)
+                        self.workers.append(worker)
+                        worker.start()
+                except ConfigObjError:
+                    self.logger.error("Can not parse connectionInfo for module {0}: Path: {1}.".format(name, configPath))
+                except queue.Empty:
+                    #Just do nothing. This is a normal case
+                    self.logger.debug("No job to handle.")
+                except KeyError as e:
+                    self.logger.error("Missing key '{0}' in configuration file for module {1}.".format(e.args[0], name))
+                except Exception as e:
+                    self.logger.debug("{0}: {1}".format(type(e), traceback.format_exc()))
+                    self.logger.error("Error while executing scan!")
+        except Exception as e:
+            self.logger.critical("Error in EnvironmentHandler: {}".format(str(e)))
 
     def finishedCallback(self, module, interval, worker):
         """
@@ -482,16 +487,16 @@ class EnvironmentHandler(threading.Thread):
         self.taskState = "Start building..."
         self.logger.info(self.taskState)
 
-        initTime = time.time()
+        initTime = time.gmtime()
 
         #---------------------------- Measure time -----------------------------
         #with open("/etc/insalata/tmp/timer.txt", 'w') as timerfile:
         #-----------------------------------------------------------------------
 
         #execute every command of the ordered plan
-        for i, cmd in enumerate(plan):
+        for i, cmd in enumerate(plan, start = 1):
             #cmd: (function pointer, function parameter)
-            self.taskState = "Call step {0}/{1}: '{2}' on object '{3}'".format(str(i+1), len(plan), cmd[0].__name__, cmd[1].getID())
+            self.taskState = "Call step {0}/{1}: '{2}' on object '{3}'".format(str(i), len(plan), cmd[0].__name__, cmd[1].getID())
             self.logger.info(self.taskState)
 
             #write timer
@@ -503,13 +508,13 @@ class EnvironmentHandler(threading.Thread):
             except Exception as e:
                 self.logger.error("{0}: {1}".format(type(e), traceback.format_exc()))
                 self.logger.error("Error while executing step '{0}'".format(cmd[0].__name__))
-            
-            #endTime = time.time()
-            #timerfile.write(" -- stopped at {0} -- elapsed {1}".format(endTime, endTime - startTime))
 
-        self.taskState = "Finished setup started at '{0}'.".format(initTime.strftime("%d.%b.%Y %H:%M:%S"))
-        self.logger.info(self.taskState)
-        self.unfreezeEnvironment()
+        try:
+            self.taskState = "Finished setup started at '{0}'.".format(time.strftime("%d.%b.%Y %H:%M:%S", initTime))
+            self.logger.info(self.taskState)
+            self.unfreezeEnvironment()
+        except Exception as e:
+                self.logger.error("{0}: {1}".format(type(e), traceback.format_exc()))
 
     def freezeEnvironment(self):
         """
@@ -529,6 +534,7 @@ class EnvironmentHandler(threading.Thread):
         """
         Unfreeze the envornment by restarting all timers.
         """
+        self.logger.info("Unfreezing Environment: {}".format(self.name))
         self.graph.melt()
         for module in self.collectorModules:
             self.timers[module].resume()
