@@ -84,7 +84,7 @@ class Insalata:
             sys.stderr.flush()
             self.__dispose__(exitCode = 1)
         except Exception as e:
-            self.logger.critical("Can not start service.")
+            self.logger.critical("Error while starting/stopping INSALATA.")
             self.__dispose__(exitCode = 1)
 
     def __createGlobalLogger__(self, config):

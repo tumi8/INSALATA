@@ -27,7 +27,7 @@ def scan(graph, connectionInfo, logger, thread):
     :param thread: Thread executing this collector
     :type thread: insalata.scanner.Worker.Worker
     """
-    logger.info("Collecting interface configuration information from Hosts")
+    logger.info("Collecting interface configuration information from network components")
 
     timeout = int(connectionInfo['timeout'])
     name = connectionInfo['name']

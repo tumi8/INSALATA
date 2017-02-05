@@ -26,7 +26,7 @@ def scan(graph, connectionInfo, logger, thread):
     :type thread: insalata.scanner.Worker.Worker
     """
 
-    logger.info("Reading networks on server:{0}".format(connectionInfo['xenuri']))
+    logger.info("Reading networks on server: {}".format(connectionInfo['xenuri']))
 
     timeout = int(connectionInfo['timeout'])
     name = connectionInfo['name']
