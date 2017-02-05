@@ -46,7 +46,11 @@ def scan(graph, connectionInfo, logger, thread):
         if not routingInformation:
             logger.debug("No routing informaiton available for host {}".format(host.getID()))
             continue
-        for entry in ssh.getRoutingInfo():
+        routingInfo = ssh.getRoutingInfo()
+        if not routingInfo:
+            logger.debug("No routing information (None) for host. '{}'".format(host.getID()))
+            continue
+        for entry in routingInfo:
             if "delimiter" in list(entry.keys()) or entry['gateway'] == "0.0.0.0": #No routes in directly connected networks should be depicted
                 continue
             interface = [i for i in hostInterfaces if i.getMAC() == entry['mac']]
